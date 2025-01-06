@@ -11,6 +11,7 @@ public static class HandlersConfiguration
     )
     {
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<CreateMovieHandler>());
+        services.AddRepositories();
         return services;
     }
     

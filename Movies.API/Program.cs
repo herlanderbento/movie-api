@@ -6,6 +6,12 @@ builder.Services
     .AddAppConections(builder.Configuration)
     .AddHandlers()
     .AddAndConfigureControllers()
+    .AddHttpLogging(logging =>
+    {
+        logging.LoggingFields = Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.All;
+        logging.RequestBodyLogLimit = 4096; 
+        logging.ResponseBodyLogLimit = 4096;
+    })
     .AddCors(p => p.AddPolicy("CORS", builder =>
     {
         builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
@@ -14,10 +20,11 @@ builder.Services
 var app = builder.Build();
 
 app.UseHttpLogging();
-app.UseDocumentation(); // Swagger configurado antes dos demais middlewares
+app.UseDocumentation();
 app.UseCors("CORS");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
