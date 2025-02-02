@@ -1,6 +1,8 @@
 ﻿using Movies.Application.Handlers;
 using Movies.Infrastructure.Data.Repositories;
+using Movies.Infrastructure.Data;
 using Movies.Domain.Repository;
+using Movies.Application.Interfaces;
 
 namespace Movies.API.Configurations;
 
@@ -10,7 +12,7 @@ public static class HandlersConfiguration
         this IServiceCollection services
     )
     {
-        services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<CreateMovieHandler>());
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateMovieHandler).Assembly));
         services.AddRepositories();
         return services;
     }
@@ -20,6 +22,7 @@ public static class HandlersConfiguration
     )
     {
         services.AddTransient<IMovieRepository, MovieRepository>();
+        services.AddTransient<IUnitOfWork, UnitOfWork>();
         return services;
     }
 }

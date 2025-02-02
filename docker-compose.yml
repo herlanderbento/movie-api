@@ -1,0 +1,39 @@
+﻿version: "3.8"
+
+services:
+  movies-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: movies_api
+    depends_on:
+      movie_db:
+        condition: service_healthy
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__CatalogDb=Host=localhost;Port=5432;Database=movies_db;Username=movies_user;Password=movies_password
+    ports:
+      - "8080:80"
+    restart: always
+
+  movie_db:
+    image: postgres:16
+    container_name: catalogdb
+    hostname: localhost
+    environment:
+      POSTGRES_DB: movies_db
+      POSTGRES_USER: movies_user
+      POSTGRES_PASSWORD: movies_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U movies_user -d movies_db"]
+      interval: 10s
+      retries: 5
+      timeout: 5s
+
+volumes:
+  postgres_data:

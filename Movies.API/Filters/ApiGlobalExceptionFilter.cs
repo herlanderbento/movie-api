@@ -15,8 +15,8 @@ public class ApiGlobalExceptionFilter : IExceptionFilter
         var details = new ProblemDetails();
         var exception = context.Exception;
 
-        if (_env.IsDevelopment())
-            details.Extensions.Add("StackTrace", exception.StackTrace);
+        // if (_env.IsDevelopment())
+        //     details.Extensions.Add("StackTrace", exception.StackTrace);
 
         if(exception is EntityValidationException)
         {

@@ -5,12 +5,12 @@ namespace Movies.Domain.Entity;
 
 public class Movie : AggregateRoot
 {
-    public string Title { get; set; }
-    public string Description { get; set; }
-    public string Director { get; set; }
-    public int ReleaseYear { get; set; }
+    public string Title { get; private set; }
+    public string Description { get; private set; }
+    public string Director { get; private set; }
+    public int ReleaseYear { get; private set; }
     public DateTime CreatedAt { get; private set; }
-    public DateTime UpdatedAt { get; protected set;  }
+    public DateTime UpdatedAt { get; private set; }
 
     public Movie(string title, string description, string director, int releaseYear) : base()
     {
@@ -18,7 +18,8 @@ public class Movie : AggregateRoot
         Description = description;
         Director = director;
         ReleaseYear = releaseYear;
-        CreatedAt = DateTime.Now;
+        CreatedAt = DateTime.UtcNow;
+        UpdatedAt = DateTime.UtcNow;
         
         Validate();
     }
@@ -30,7 +31,7 @@ public class Movie : AggregateRoot
         Description = description ?? Description;
         ReleaseYear = releaseYear ?? ReleaseYear;
         
-        UpdatedAt = DateTime.Now;
+        UpdatedAt = DateTime.UtcNow;
         
         Validate();
     }
@@ -40,8 +41,6 @@ public class Movie : AggregateRoot
         DomainValidation.NotNullOrEmpty(Title, nameof(Title));
         DomainValidation.MinLength(Title, 3, nameof(Title));
         DomainValidation.MaxLength(Title, 255, nameof(Title));
-        
-    
         DomainValidation.NotNull(Description, nameof(Description));
         DomainValidation.MaxLength(Description, 4_000, nameof(Description));
     }

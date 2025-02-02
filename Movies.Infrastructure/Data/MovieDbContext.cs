@@ -18,4 +18,18 @@ public class MovieDbContext: DbContext
     builder.ApplyConfiguration(new MovieConfiguration());
   }
   
+  public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
+  {
+    var entries = ChangeTracker
+      .Entries<Movie>()
+      .Where(e => e.State == EntityState.Modified);
+
+    foreach (var entry in entries)
+    {
+      entry.Property("LastUpdated").CurrentValue = DateTime.Now;
+    }
+
+    return base.SaveChangesAsync(cancellationToken);
+  }
+  
 }
